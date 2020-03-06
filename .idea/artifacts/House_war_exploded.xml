@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="House:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/House_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="MyHome/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="MyHome" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Hibernate 4.2.2-4.2.2" />
+          <element id="library" level="project" name="Struts 2-2.3.20.1" />
+          <element id="library" level="project" name="Javamail" />
+          <element id="library" level="project" name="lib" />
+          <element id="library" level="project" name="editor-lib" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

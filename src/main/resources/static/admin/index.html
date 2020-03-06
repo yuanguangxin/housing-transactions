@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <title>Admin</title>
+    <link rel="shortcut icon" href="#"/>
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <script src="/assets/js/vue.js"></script>
+    <script src="/assets/js/axios.min.js"></script>
+    <style>
+        [v-cloak] {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">House Admin</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a>用户管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="/admin/index.html">用户管理</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a>房屋管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="/admin/house.html">房屋管理</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" id="main">
+        <div style="padding: 15px;">
+            <div class="layui-select-title">
+                <input type="text" placeholder="用户名查找" class="layui-input" v-model="searchText"
+                       @keyup.enter="search">
+                <i class="layui-edge"></i>
+            </div>
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>性别</th>
+                    <th>简介</th>
+                    <th>电话</th>
+                    <th>邮箱</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="user_list">
+                <tr v-for="item of user">
+                    <td v-cloak>{{item.id}}</td>
+                    <td v-cloak>{{item.username}}</td>
+                    <td v-cloak>{{item.sex}}</td>
+                    <td v-cloak>{{item.intro}}</td>
+                    <td v-cloak>{{item.tel}}</td>
+                    <td v-cloak>{{item.email}}</td>
+                    <td><a style="cursor: pointer" @click="del(item.id,item)">删除</a></td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="page"></div>
+        </div>
+        <div id="sexChart" style="width: 400px;height:400px;float: left"></div>
+        <div id="statusChart" style="width: 400px;height:400px;float: left"></div>
+    </div>
+</div>
+<script src="/assets/layui/layui.all.js"></script>
+<script>
+    new Vue({
+        el: "#main",
+        data: () => ({
+            user: [],
+            searchText: null,
+            totalNum: 0
+        }),
+        methods: {
+            tip: function (msg) {
+                layer.closeAll();
+                layer.open({
+                    type: 1,
+                    id: 'noNon',
+                    content: '<div style="padding: 20px 100px;">' + msg + '</div>',
+                    btn: '关闭',
+                    btnAlign: 'c',
+                    shade: 0,
+                    yes: function () {
+                        layer.closeAll();
+                    }
+                });
+            },
+            normalTip: function (content, btn, func) {
+                layer.open({
+                    type: 1,
+                    content: '<div style="padding: 20px 100px;">' + content + '</div>',
+                    btn: [btn, '关闭'],
+                    btnAlign: 'c',
+                    shade: 0,
+                    yes: function () {
+                        func();
+                    },
+                    btn2: function () {
+                        layer.closeAll();
+                    }
+                });
+            },
+            del: function (id,item) {
+                let self = this;
+                this.normalTip("确认删除么？", "确认", function () {
+                    axios.get("/admin/delUser", {
+                        params: {
+                            id: id
+                        }
+                    }).then(function (res) {
+                        if (res.data.message == "ok") {
+                            let index = self.user.indexOf(item);
+                            self.user.splice(index, 1);
+                            self.tip("已删除");
+                        } else {
+                            self.tip("无权限");
+                        }
+                    })
+                });
+            },
+            search: function () {
+                let params = {
+                    pageNum: 1,
+                    content: this.searchText
+                };
+                this.renderPage(params);
+            },
+            loadPage: function (params) {
+                let self = this;
+                self.user = [];
+                axios.get("/admin/getAllUser", {
+                    params: params
+                }).then(function (res) {
+                    if (res.data.message == "ok") {
+                        self.totalNum = res.data.obj.total;
+                        for (const item of res.data.obj.list) {
+                            self.user.push(item);
+                        }
+                    } else {
+                        self.tip("无权限");
+                    }
+                })
+            },
+            renderPage: function (params) {
+                let self = this;
+                self.user = [];
+                axios.get("/admin/getAllUser", {
+                    params: params
+                }).then(function (res) {
+                    if (res.data.message == "ok") {
+                        self.totalNum = res.data.obj.total;
+                        for (const item of res.data.obj.list) {
+                            self.user.push(item);
+                        }
+                        let laypage = layui.laypage;
+                        laypage.render({
+                            elem: 'page',
+                            count: self.totalNum,
+                            first: '首页',
+                            last: '尾页',
+                            prev: '<em>←</em>',
+                            next: '<em>→</em>',
+                            layout: ['prev', 'page', 'next', 'count'],
+                            jump: function (obj) {
+                                let params = {
+                                    pageNum: obj.curr,
+                                    content: self.searchText
+                                };
+                                self.loadPage(params);
+                            }
+                        });
+                    } else {
+                        self.tip("无权限");
+                    }
+                });
+            },
+            init: function () {
+                let params = {
+                    pageNum: 1,
+                    content: this.searchText
+                };
+                this.renderPage(params);
+            }
+        },
+        mounted: function () {
+            let self = this;
+            axios.get("/admin/isAdmin").then(function (res) {
+                if (res.data.message == "ok") {
+                    self.init();
+                } else {
+                    layer.prompt({title: '请输入管理员口令', formType: 1}, function (pass) {
+                        layer.closeAll();
+                        axios.get("/admin/login", {
+                            params: {
+                                pass: pass
+                            }
+                        }).then(function (res) {
+                            if (res.data.message == "ok") {
+                                self.init();
+                            } else {
+                                self.tip("口令错误");
+                            }
+                        });
+                    });
+                }
+            });
+
+        }
+    });
+
+
+</script>
+</body>
+</html>

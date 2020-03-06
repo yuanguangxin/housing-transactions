@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="editor-lib">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../JavaEE/library/ueditor/editor-lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../JavaEE/library/ueditor/editor-lib" recursive="false" />
+  </library>
+</component>

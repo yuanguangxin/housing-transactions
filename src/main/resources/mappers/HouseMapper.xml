@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yyy.housingtransactions.dao.HouseMapper">
+    <resultMap id="BaseResultMap" type="com.yyy.housingtransactions.model.House">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="intro" property="intro" jdbcType="VARCHAR"/>
+        <result column="size" property="size" jdbcType="DECIMAL"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="layout" property="layout" jdbcType="VARCHAR"/>
+        <result column="towards" property="towards" jdbcType="VARCHAR"/>
+        <result column="estate" property="estate" jdbcType="VARCHAR"/>
+        <result column="floor" property="floor" jdbcType="VARCHAR"/>
+        <result column="imgs" property="imgs" jdbcType="VARCHAR"/>
+        <result column="detail" property="detail" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, title, intro, size, price, layout, towards, estate, floor, imgs, detail, user_id,
+        create_time
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from house
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from house
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.yyy.housingtransactions.model.House">
+        insert into house (id,
+                           title,
+                           intro,
+                           size,
+                           price,
+                           layout,
+                           towards,
+                           estate,
+                           floor,
+                           imgs,
+                           detail,
+                           user_id,
+                           create_time)
+        values (#{id,jdbcType=BIGINT},
+                #{title,jdbcType=VARCHAR},
+                #{intro,jdbcType=VARCHAR},
+                #{size,jdbcType=DECIMAL},
+                #{price,jdbcType=DECIMAL},
+                #{layout,jdbcType=VARCHAR},
+                #{towards,jdbcType=VARCHAR},
+                #{estate,jdbcType=VARCHAR},
+                #{floor,jdbcType=VARCHAR},
+                #{imgs,jdbcType=VARCHAR},
+                #{detail,jdbcType=VARCHAR},
+                #{userId,jdbcType=BIGINT},
+                #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.yyy.housingtransactions.model.House">
+        update house
+        set title       = #{title,jdbcType=VARCHAR},
+            intro       = #{intro,jdbcType=VARCHAR},
+            size        = #{size,jdbcType=DECIMAL},
+            price       = #{price,jdbcType=DECIMAL},
+            layout      = #{layout,jdbcType=VARCHAR},
+            towards     = #{towards,jdbcType=VARCHAR},
+            estate      = #{estate,jdbcType=VARCHAR},
+            floor       = #{floor,jdbcType=VARCHAR},
+            imgs        = #{imgs,jdbcType=VARCHAR},
+            detail      = #{detail,jdbcType=VARCHAR},
+            user_id      = #{userId,jdbcType=BIGINT},
+            create_time = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from house
+        <if test="content!=null">
+            where title like CONCAT('%',#{content},'%')
+        </if>
+    </select>
+
+    <select id="query" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from house where 1 =1
+        <if test="title!=null and title!=''">
+            and title like CONCAT('%',#{title},'%')
+        </if>
+        <if test="beginSize!=null and endSize!=null">
+            and size between #{beginSize} and #{endSize}
+        </if>
+        <if test="beginPrice!=null and endPrice!=null">
+            and price between #{beginPrice} and #{endPrice}
+        </if>
+        <if test="layout!=null and layout!=''">
+            and layout = #{layout}
+        </if>
+        <if test="towards!=null and towards!=''">
+            and towards = #{towards}
+        </if>
+        <if test="floor!=null and floor!=''">
+            and floor = #{floor}
+        </if>
+        order by id desc
+    </select>
+
+    <select id="selByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from house where user_id = #{userId}
+    </select>
+</mapper>

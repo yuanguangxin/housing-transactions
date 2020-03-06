@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yyy.housingtransactions.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.yyy.housingtransactions.model.User">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="intro" property="intro" jdbcType="VARCHAR"/>
+        <result column="tel" property="tel" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, username, password, intro, tel, email, sex, remark
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from user
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.yyy.housingtransactions.model.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user (id, username, password, intro, tel, email, sex, remark)
+        values (#{id,jdbcType=BIGINT},
+                #{username,jdbcType=VARCHAR},
+                #{password,jdbcType=VARCHAR},
+                #{intro,jdbcType=VARCHAR},
+                #{tel,jdbcType=VARCHAR},
+                #{email,jdbcType=VARCHAR},
+                #{sex,jdbcType=VARCHAR},
+                #{remark,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.yyy.housingtransactions.model.User">
+        update user
+        set username = #{username,jdbcType=VARCHAR},
+            password = #{password,jdbcType=VARCHAR},
+            intro    = #{intro,jdbcType=VARCHAR},
+            tel      = #{tel,jdbcType=VARCHAR},
+            email    = #{email,jdbcType=VARCHAR},
+            sex      = #{sex,jdbcType=VARCHAR},
+            remark   = #{remark,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectByUsername" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where username = #{username} limit 1
+    </select>
+
+    <select id="selectByUsernameAndPassword" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where username = #{username} and password = #{password} limit 1
+    </select>
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        <if test="content!=null">
+            where username like CONCAT('%',#{content},'%')
+        </if>
+    </select>
+</mapper>

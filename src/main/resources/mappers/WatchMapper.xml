@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yyy.housingtransactions.dao.WatchMapper">
+    <resultMap id="BaseResultMap" type="com.yyy.housingtransactions.model.Watch">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="house_id" property="houseId" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, house_id
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from watch
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from watch
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.yyy.housingtransactions.model.Watch">
+        insert into watch (id, user_id, house_id)
+        values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{houseId,jdbcType=BIGINT})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.yyy.housingtransactions.model.Watch">
+        update watch
+        set user_id  = #{userId,jdbcType=BIGINT},
+            house_id = #{houseId,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from watch where user_id = #{userId}
+    </select>
+
+    <select id="selByUserIdAndHouseId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from watch where user_id = #{userId} and house_id = #{houseId} limit 1
+    </select>
+
+    <delete id="delByUserIdAndHouseId">
+        delete
+        from watch
+        where user_id = #{userId}
+          and house_id = #{houseId}
+    </delete>
+</mapper>

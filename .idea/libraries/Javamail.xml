@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Javamail">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../JavaEE/library/Javamail" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../JavaEE/library/Javamail" recursive="false" />
+  </library>
+</component>
