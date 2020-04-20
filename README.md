@@ -6,7 +6,7 @@
 
 采用 Vue+SpringBoot
 
-前端仓库：https://github.com/yuanguangxin/housing-transactions-fronted
+前端仓库：[仿贝壳网的房屋交易平台-前端](https://github.com/yuanguangxin/housing-transactions-fronted)
 
 ## Scrennshot
 
